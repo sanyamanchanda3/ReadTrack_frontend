@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReadTrack</title>
+  <script>
+    if (!localStorage.getItem("readtrackCurrentUser") && !localStorage.getItem("readtrackUser")) {
+      window.location.replace("auth.html");
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">R</div>
+        <div>
+          <h1>ReadTrack</h1>
+          <p>Reading analytics workspace</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-link active" data-tab="dashboard" type="button">
+          <span class="nav-icon">D</span>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-link" data-tab="add-entry" type="button">
+          <span class="nav-icon">+</span>
+          <span>Add Entry</span>
+        </button>
+        <button class="nav-link" data-tab="reading-log" type="button">
+          <span class="nav-icon">L</span>
+          <span>Logs</span>
+        </button>
+        <button class="nav-link" data-tab="statistics" type="button">
+          <span class="nav-icon">S</span>
+          <span>Stats</span>
+        </button>
+        <button class="nav-link" data-tab="account" type="button">
+          <span class="nav-icon">A</span>
+          <span>Account</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-note">
+        <h4>Reading Focus</h4>
+        <p>How close you are to your goals</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section id="dashboard" class="app-section active-section">
+        <div class="dashboard-command-hero">
+          <div class="dashboard-hero-copy">
+            
+            <h3>Welcome back to your reading space</h3>
+            <p id="dashboardHeroLine">Pick up where you left off and keep your reading queue moving.</p>
+          </div>
+
+          <div class="dashboard-today-card">
+            <span>Today</span>
+            <strong id="dashboardTodaySummary">0 active reads</strong>
+            <p id="">Add an entry or log a session to build momentum</p>
+          </div>
+        </div>
+
+        <div class="dashboard-command-grid">
+          <section class="dashboard-focus-card">
+            <div class="dashboard-card-head">
+              <div>
+                <p class="section-label">Current Focus</p>
+                <h4 id="dashboardFocusTitle">No active reading yet</h4>
+              </div>
+              <span class="dashboard-status-pill" id="dashboardFocusStatus">Idle</span>
+            </div>
+            <p id="dashboardFocusMeta">Choose a reading item</p>
+            <div class="dashboard-focus-progress">
+              <div class="progress-rail">
+                <div class="progress-fill" id="dashboardFocusFill"></div>
+              </div>
+              <span id="dashboardFocusPages">0 pages tracked</span>
+            </div>
+            <div class="dashboard-focus-grid">
+              <div>
+                <span>Next Up</span>
+                <strong id="dashboardNextFocus">Nothing queued</strong>
+              </div>
+              <div>
+                <span>Pending</span>
+                <strong id="dashboardPendingFocus">0 items</strong>
+              </div>
+              <div>
+                <span>Goal</span>
+                <strong id="dashboardGoalMiniSummary">No goal set</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-actions-section">
+            <div class="dashboard-card-head">
+              <div>
+                <p class="section-label">Quick Actions</p>
+                <h4>Move faster</h4>
+              </div>
+            </div>
+            <div class="dashboard-action-list">
+              <button type="button" class="dashboard-action-button" data-dashboard-tab="add-entry">
+                <span>Add New Entry</span>
+                <small>Save a book, article, or paper</small>
+              </button>
+              <button type="button" class="dashboard-action-button" data-dashboard-tab="reading-log">
+                <span>Open Reading Log</span>
+                <small>Review pending and completed items</small>
+              </button>
+              <button type="button" class="dashboard-action-button" data-dashboard-focus="sessionEntryId">
+                <span>Log Reading Session</span>
+                <small>Track today's pages</small>
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="dashboard-momentum-strip">
+          <article>
+            <span>Total Entries</span>
+            <strong id="totalEntries">0</strong>
+          </article>
+          <article>
+            <span>Completed</span>
+            <strong id="completedEntries">0</strong>
+          </article>
+          <article>
+            <span>Currently Reading</span>
+            <strong id="readingEntries">0</strong>
+          </article>
+          <article>
+            <span>To Read</span>
+            <strong id="toReadEntries">0</strong>
+          </article>
+          <article>
+            <span>Avg Rating</span>
+            <strong id="averageRating">0.0</strong>
+          </article>
+          <article>
+            <span>Favorite Category</span>
+            <strong id="dashboardFavoriteCategory">None</strong>
+          </article>
+        </div>
+
+        <div class="dashboard-workspace-grid">
+          <section class="dashboard-open-section dashboard-momentum-card">
+            <div class="dashboard-card-head">
+              <div>
+                <p class="section-label">Reading Momentum</p>
+                <h4>Progress this week</h4>
+              </div>
+              <span class="feature-badge" id="streakCount">0 days</span>
+            </div>
+            <div class="dashboard-momentum-stats">
+              <div>
+                <span>Overall Completion</span>
+                <strong id="progressPercent">0%</strong>
+              </div>
+              <div>
+                <span>Pages This Week</span>
+                <strong id="dashboardMomentumPages">0</strong>
+              </div>
+              <div>
+                <span>Sessions</span>
+                <strong id="dashboardMomentumSessions">0</strong>
+              </div>
+            </div>
+            <div class="progress-rail">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="streakMessage">Log reading sessions to build your streak.</p>
+            <div class="progress-meta">
+              <div class="progress-stat">
+                <span>Completed</span>
+                <strong id="progressCompleted">0</strong>
+              </div>
+              <div class="progress-stat">
+                <span>Pending</span>
+                <strong id="progressPending">0</strong>
+              </div>
+              <div class="progress-stat">
+                <span>Favorites</span>
+                <strong id="favoriteCount">0</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-module dashboard-goal-card">
+            <div class="dashboard-card-head">
+              <div>
+                <p class="section-label">Goal & Progress</p>
+                <h4>Reading target</h4>
+              </div>
+            </div>
+            <form id="goalForm" class="goal-form">
+              <div class="goal-grid">
+                <div class="form-group">
+                  <label for="goalTitle">Goal Title</label>
+                  <input type="text" id="goalTitle" placeholder="Read 5 books this month">
+                </div>
+                <div class="form-group">
+                  <label for="goalTarget">Target</label>
+                  <input type="number" id="goalTarget" min="1" placeholder="5">
+                </div>
+              </div>
+              <div class="goal-actions">
+                <button type="submit" class="btn btn-primary">Save Goal</button>
+                <button type="button" id="deleteGoalButton" class="btn btn-secondary">Delete Goal</button>
+              </div>
+            </form>
+            <div class="goal-progress">
+              <div class="goal-progress-head">
+                <span id="goalSummary">No goal set yet</span>
+                <strong id="goalProgressText">0 / 0</strong>
+              </div>
+              <div class="progress-rail">
+                <div class="progress-fill" id="goalProgressFill"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-open-section dashboard-session-card">
+            <div class="dashboard-card-head">
+              <div>
+                <p class="section-label">Log Session</p>
+                <h4>Track today's pages</h4>
+              </div>
+            </div>
+            <form id="sessionForm" class="session-form">
+              <div class="session-grid">
+                <div class="form-group">
+                  <label for="sessionEntryId">Entry</label>
+                  <select id="sessionEntryId"></select>
+                </div>
+                <div class="form-group">
+                  <label for="sessionDate">Date</label>
+                  <input type="date" id="sessionDate">
+                </div>
+                <div class="form-group">
+                  <label for="sessionPages">Pages Read</label>
+                  <input type="number" id="sessionPages" min="1" placeholder="12">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Session</button>
+              </div>
+            </form>
+            <div class="tracking-toolbar">
+              <div class="toolbar-group">
+                <button type="button" class="range-button active" data-range="week">Week</button>
+                <button type="button" class="range-button" data-range="month">Month</button>
+              </div>
+            </div>
+            <div class="chart-shell">
+              <canvas id="readingTrendChart"></canvas>
+            </div>
+          </section>
+
+          <section class="dashboard-open-section dashboard-activity-card">
+            <div class="dashboard-card-head">
+              <div>
+                <p class="section-label">Recent Activity</p>
+                <h4>Latest updates</h4>
+              </div>
+            </div>
+            <div id="recentActivityList" class="activity-list">
+              <div class="activity-empty">Your recent reading activity will appear here.</div>
+            </div>
+          </section>
+
+          <section class="dashboard-open-section dashboard-insights-card">
+            <div class="dashboard-card-head">
+              <div>
+                <p class="section-label">Smart Highlights</p>
+                <h4>Useful signals</h4>
+              </div>
+            </div>
+            <div class="insight-list">
+              <div class="insight-item">
+                <span>Favorite Category</span>
+                <strong id="favoriteCategory">None yet</strong>
+              </div>
+              <div class="insight-item">
+                <span>Highest Rated Item</span>
+                <strong id="highestRatedItem">No ratings yet</strong>
+              </div>
+              <div class="insight-item">
+                <span>Most Common Type</span>
+                <strong id="mostCommonType">No entries yet</strong>
+              </div>
+              <div class="insight-item">
+                <span>Next Up</span>
+                <strong id="nextUpItem">Nothing queued</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="add-entry" class="app-section">
+        <div class="section-header add-entry-header">
+          <div>
+            
+            <h3>Save your reading item</h3>
+            <p class="section-text">Capture the details,notes, and your favorite quotes</p>
+          </div>
+        </div>
+
+        <form id="entryForm" class="entry-form">
+          <input type="hidden" id="entryId">
+
+          <div class="entry-form-section">
+            <div class="entry-section-heading">
+              <h4>Entry Details</h4>
+              <p>Identify the reading item and keep it easy to find later</p>
+            </div>
+
+            <div class="entry-section-grid">
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" placeholder="Enter title" required>
+              </div>
+
+              <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" id="author" placeholder="Enter author" required>
+              </div>
+
+              <div class="form-group">
+                <label for="type">Type</label>
+                <select id="type" required>
+                  <option value="">Select type</option>
+                  <option value="Book">Book</option>
+                  <option value="Research Paper">Research Paper</option>
+                  <option value="Article">Article</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" id="category" placeholder="Example: Productivity">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="tags">Tags</label>
+                <input type="text" id="tags" placeholder="Comma separated tags">
+                <small class="field-help">Use commas to separate tags, like focus, habits, research</small>
+                <div class="tag-preview" id="tagPreview">
+                  <span class="tag-preview-empty">Tag chips will appear here</span>
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="coverImageUrl">Cover Image URL</label>
+                <input type="url" id="coverImageUrl" placeholder="https://example.com/cover.jpg">
+                
+                <div class="cover-preview" id="coverPreview">
+                  <div class="cover-preview-placeholder" id="coverPreviewPlaceholder">No cover image added</div>
+                  <img id="coverPreviewImage" alt="Cover preview">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="entry-form-section">
+            <div class="entry-section-heading">
+              <h4>Reading Progress</h4>
+              <p>Track status, page count, rating, and priority flags</p>
+            </div>
+
+            <div class="entry-section-grid">
+              <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" required>
+                  <option value="">Select status</option>
+                  <option value="To Read">To Read</option>
+                  <option value="Reading">Reading</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Dropped">Dropped</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="totalPages">Total Pages</label>
+                <input type="number" id="totalPages" min="0" placeholder="300">
+              </div>
+
+              <div class="form-group">
+                <label for="pagesRead">Pages Read</label>
+                <input type="number" id="pagesRead" min="0" placeholder="90">
+              </div>
+
+              <div class="form-group">
+                <label for="rating">Rating</label>
+                <input type="hidden" id="rating">
+                <div class="rating-picker" id="ratingPicker" role="radiogroup" aria-label="Rating">
+                  <button type="button" class="rating-star" data-rating="1" role="radio" aria-label="1 star">&#9733;</button>
+                  <button type="button" class="rating-star" data-rating="2" role="radio" aria-label="2 stars">&#9733;</button>
+                  <button type="button" class="rating-star" data-rating="3" role="radio" aria-label="3 stars">&#9733;</button>
+                  <button type="button" class="rating-star" data-rating="4" role="radio" aria-label="4 stars">&#9733;</button>
+                  <button type="button" class="rating-star" data-rating="5" role="radio" aria-label="5 stars">&#9733;</button>
+                </div>
+              </div>
+
+              <div class="form-group toggle-group">
+                <span>Favorite</span>
+                <label class="toggle-field" for="isFavorite">
+                  <input type="checkbox" id="isFavorite">
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text">Mark as favorite</span>
+                </label>
+              </div>
+
+              <div class="form-group toggle-group">
+                <span>Next to Read</span>
+                <label class="toggle-field" for="isNextUp">
+                  <input type="checkbox" id="isNextUp">
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text">Add to next queue</span>
+                </label>
+              </div>
+
+              <div class="progress-preview full-width">
+                <div class="progress-preview-head">
+                  <span>Progress Preview</span>
+                  <strong id="entryProgressText">0% completed</strong>
+                </div>
+                <div class="progress-rail">
+                  <div class="progress-fill" id="entryProgressFill"></div>
+                </div>
+                <div class="progress-preview-details">
+                  <span id="entryPagesLeftText">0 pages left</span>
+                  <span id="entryProgressWarning"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="entry-form-section">
+            <div class="entry-section-heading">
+              <h4>Dates</h4>
+              <p>Add reading dates when you want a clearer timeline</p>
+            </div>
+
+            <div class="entry-section-grid">
+              <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate">
+              </div>
+
+              <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="date" id="endDate">
+              </div>
+            </div>
+          </div>
+
+          <div class="entry-form-section">
+            <div class="entry-section-heading">
+              <h4>Notes &amp; Highlights</h4>
+              <p>Save the ideas, moments, and quotes you want to revisit</p>
+            </div>
+
+            <div class="form-stack">
+              <div class="form-group full-width">
+                <label for="summary">Summary / Notes</label>
+                <textarea id="summary" class="textarea-large" rows="6" placeholder="Write a summary or notes"></textarea>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="highlight">Key Highlight</label>
+                <textarea id="highlight" class="textarea-medium" rows="4" placeholder="Store an important highlight"></textarea>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="quote">Quote</label>
+                <textarea id="quote" class="textarea-small" rows="2" placeholder="Save a memorable quote"></textarea>
+                <small class="field-help">Add the line exactly as you want to remember it</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="submitButton">Save Entry</button>
+            <button type="button" class="btn btn-secondary" id="cancelEditButton">Reset Form</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="reading-log" class="app-section">
+        <div class="reading-filter-header">
+          <div>
+            <p class="section-label">Reading Log</p>
+            <h3>Search, filter, and manage entries</h3>
+          </div>
+          <p class="section-text">Find saved items by title, reading state, type, favorites, or tags</p>
+        </div>
+
+        <div class="reading-search-row">
+          <label for="searchInput">Search</label>
+          <input type="text" id="searchInput" placeholder="Search by title">
+        </div>
+
+        <div class="reading-filter-row">
+          <div class="filter-control">
+            <label for="filterType">Type</label>
+            <select id="filterType">
+              <option value="All">All Types</option>
+              <option value="Book">Book</option>
+              <option value="Research Paper">Research Paper</option>
+              <option value="Article">Article</option>
+            </select>
+          </div>
+
+          <div class="filter-control">
+            <label for="filterStatus">Status</label>
+            <select id="filterStatus">
+              <option value="All">All Statuses</option>
+              <option value="To Read">To Read</option>
+              <option value="Reading">Reading</option>
+              <option value="Completed">Completed</option>
+              <option value="Dropped">Dropped</option>
+            </select>
+          </div>
+
+          <div class="filter-control">
+            <label for="favoriteFilter">Favorites</label>
+            <select id="favoriteFilter">
+              <option value="All">All Entries</option>
+              <option value="Favorites">Favorites Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tag-filter-panel">
+          <span class="tag-filter-label">Tags</span>
+          <div id="tagFilterContainer" class="tag-filter-list"></div>
+          <button type="button" id="clearTagFilter" class="text-button">Clear Tag</button>
+        </div>
+
+        <div class="panel reading-entries-panel">
+          <div class="log-header">
+            <div>
+              <p class="section-label">Entries</p>
+              <h3>All saved reading items</h3>
+            </div>
+            <span id="resultsCount" class="results-count">0 entries</span>
+          </div>
+
+          <div id="entriesContainer" class="entries-grid">
+            <div class="empty-state">
+              <h4>No entries yet</h4>
+              <p>Add your first reading item to start tracking progress</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="statistics" class="app-section">
+        <div class="stats-hero">
+          <div class="stats-hero-copy">
+            <p class="section-label">Stats</p>
+            <h3>Reading analytics dashboard</h3>
+            <p class="section-text">A clean overview of your reading mix, completion progress, ratings, and activity trends</p>
+          </div>
+
+          <div class="stats-hero-grid">
+            <article class="stats-highlight">
+              <div class="stats-icon">&#128202;</div>
+              <span>Total Entries</span>
+              <strong id="statsTotalEntries">0</strong>
+            </article>
+            <article class="stats-highlight">
+              <div class="stats-icon">&#9989;</div>
+              <span>Completion Rate</span>
+              <strong id="statsCompletionRate">0%</strong>
+            </article>
+            <article class="stats-highlight">
+              <div class="stats-icon">&#9733;</div>
+              <span>Average Rating</span>
+              <strong id="statsAverageRating">0.0</strong>
+            </article>
+            <article class="stats-highlight">
+              <div class="stats-icon">&#128216;</div>
+              <span>Favorite Type</span>
+              <strong id="statsFavoriteType">None yet</strong>
+            </article>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <div class="stats-section-heading">
+            <div>
+              <p class="section-label">Overview</p>
+              <h4>Library composition</h4>
+            </div>
+            <p>High-level counts by content type, saved favorites, and reading status</p>
+          </div>
+
+          <div class="statistics-grid">
+            <article class="stat-card">
+              <span>Books</span>
+              <strong id="statsBooks">0</strong>
+              <p>Saved book entries</p>
+            </article>
+            <article class="stat-card">
+              <span>Research Papers</span>
+              <strong id="statsPapers">0</strong>
+              <p>Academic or research reads</p>
+            </article>
+            <article class="stat-card">
+              <span>Articles</span>
+              <strong id="statsArticles">0</strong>
+              <p>Short-form reading items</p>
+            </article>
+            <article class="stat-card">
+              <span>Completed / Pending</span>
+              <strong id="statsCompletion">0 / 0</strong>
+              <p>Finished vs still open</p>
+            </article>
+            <article class="stat-card">
+              <span>Favorites</span>
+              <strong id="statsFavorites">0</strong>
+              <p>Marked as favorite</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <div class="stats-section-heading">
+            <div>
+              <p class="section-label">Reading Insights</p>
+              <h4>Useful patterns</h4>
+            </div>
+            <p>Quick signals about categories, pages, streaks, and rating quality</p>
+          </div>
+
+          <div class="stats-insight-grid">
+            <article class="stats-insight-card">
+              <div class="stats-insight-icon">&#127991;</div>
+              <span>Favorite Category</span>
+              <strong id="statsFavoriteCategory">None yet</strong>
+              <p id="statsFavoriteCategoryHint">Your most common category will appear here</p>
+            </article>
+            <article class="stats-insight-card">
+              <div class="stats-insight-icon">&#128196;</div>
+              <span>Average Pages Read</span>
+              <strong id="statsAveragePages">0</strong>
+              <p id="statsAveragePagesHint">Average progress across saved entries</p>
+            </article>
+            <article class="stats-insight-card">
+              <div class="stats-insight-icon">&#128293;</div>
+              <span>Reading Streak</span>
+              <strong id="statsReadingStreak">0 days</strong>
+              <p id="statsReadingStreakHint">Log reading sessions to build momentum</p>
+            </article>
+            <article class="stats-insight-card">
+              <div class="stats-insight-icon">&#9733;</div>
+              <span>Highest Rated Type</span>
+              <strong id="statsHighestRatedType">No ratings yet</strong>
+              <p id="statsHighestRatedTypeHint">Rating patterns appear after you rate entries</p>
+            </article>
+            <article class="stats-insight-card">
+              <div class="stats-insight-icon">&#128218;</div>
+              <span>To Read vs Completed</span>
+              <strong id="statsToReadRatio">0 / 0</strong>
+              <p id="statsToReadRatioHint">Compare planned reading against finished work</p>
+            </article>
+            <article class="stats-insight-card">
+              <div class="stats-insight-icon">&#128200;</div>
+              <span>Most Read Type</span>
+              <strong id="statsMostReadType">None yet</strong>
+              <p id="statsMostReadTypeHint">Your dominant content type will appear here</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <div class="stats-section-heading">
+            <div>
+              <p class="section-label">Visual Analytics</p>
+              <h4>Breakdown by format and progress</h4>
+            </div>
+            <p>Charts group your reading by content format and completion state</p>
+          </div>
+
+          <div class="chart-grid">
+            <article class="chart-card stats-chart-card">
+              <div class="feature-card-header">
+                <div>
+                  <p class="section-label">Content Mix</p>
+                  <h4>Books vs Articles vs Papers</h4>
+                  <p class="card-subtitle">Compare the types of content saved in your library</p>
+                </div>
+              </div>
+              <div class="chart-shell">
+                <canvas id="typeChart"></canvas>
+              </div>
+            </article>
+
+            <article class="chart-card stats-chart-card">
+              <div class="feature-card-header">
+                <div>
+                  <p class="section-label">Completion</p>
+                  <h4>Completed vs Pending</h4>
+                  <p class="card-subtitle">See how much of your reading list is already finished</p>
+                </div>
+              </div>
+              <div class="chart-shell">
+                <canvas id="completionChart"></canvas>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <div class="stats-section-heading">
+            <div>
+              <p class="section-label">Trends / Activity</p>
+              <h4>Pages read over time</h4>
+            </div>
+            <div class="stats-range-control" aria-label="Stats time range">
+              <button type="button" class="stats-range-button active" data-stats-range="week">Last 7 days</button>
+              <button type="button" class="stats-range-button" data-stats-range="month">30 days</button>
+              <button type="button" class="stats-range-button" data-stats-range="all">All time</button>
+            </div>
+          </div>
+
+          <article class="chart-card stats-trend-card">
+            <div class="feature-card-header">
+              <div>
+                <p class="section-label">Reading Activity</p>
+                <h4>Session trend</h4>
+                <p class="card-subtitle">Pages logged from recent reading sessions</p>
+              </div>
+            </div>
+            <div class="chart-shell">
+              <canvas id="statsTrendChart"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="account" class="panel app-section">
+        <div class="section-header">
+          <div>
+            
+            <h3>Account Settings</h3>
+          </div>
+          <p class="section-text">Manage your profile, account actions, and preferences</p>
+        </div>
+        <div class="settings-grid">
+          <article class="feature-card settings-card account-info-card">
+            <div class="feature-card-header">
+              <div>
+                <h4>Personal Information</h4>
+              </div>
+            </div>
+
+            <div class="account-profile-row">
+              <div class="account-avatar-placeholder" id="accountAvatar">U</div>
+              <div>
+                <h4 id="accountName">User</h4>
+                <p id="accountEmail">No email</p>
+              </div>
+            </div>
+
+            <div class="account-info-list">
+              <div class="account-info-item">
+                <span>Password</span>
+                <div class="password-display-row">
+                  <strong id="accountPasswordMasked">********</strong>
+                  <button id="passwordToggleButton" class="password-toggle-button" type="button" aria-label="Show password">
+                    <svg class="eye-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <line class="eye-slash" x1="4" y1="20" x2="20" y2="4"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div class="password-action-row">
+                  <button id="changePasswordButton" class="password-action-button" type="button">Change Password</button>
+                </div>
+              </div>
+              <div class="account-info-item">
+                <span>Member Since</span>
+                <strong id="accountJoinedAt">Unknown</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-card settings-card">
+            <div class="feature-card-header">
+              <div>
+                <h4>Account Actions</h4>
+              </div>
+            </div>
+
+            <div class="account-action-list">
+              <button id="logoutButton" class="account-action-button danger" type="button">
+                <span>Logout</span>
+                <small>End this local session</small>
+              </button>
+              <button id="switchAccountButton" class="account-action-button" type="button">
+                <span>Switch Account</span>
+                <small>Return to the sign-in page</small>
+              </button>
+              <button id="addAccountButton" class="account-action-button" type="button">
+                <span>Add New Account</span>
+                <small>Create or sign in with another account</small>
+              </button>
+              <button id="deleteAccountButton" class="account-action-button danger" type="button">
+                <span>Delete Account</span>
+                <small>Remove this local account</small>
+              </button>
+            </div>
+          </article>
+
+          <article class="feature-card settings-card settings-preferences-card">
+            <div class="feature-card-header">
+              <div>
+                <h4>Preferences</h4>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <strong>Dark Mode</strong>
+                <span id="themePreference">Dark theme enabled</span>
+              </div>
+              <label class="switch-control" for="darkModeToggle">
+                <input id="darkModeToggle" type="checkbox">
+                <span></span>
+              </label>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <strong>Theme Preference</strong>
+                <span id="themePreferenceLabel">Use the theme that feels best for reading.</span>
+              </div>
+              <select id="themeSelect" class="settings-select" aria-label="Theme preference">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </select>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <strong>Notifications</strong>
+                <span>Placeholder preference for reading updates.</span>
+              </div>
+              <label class="switch-control" for="notificationToggle">
+                <input id="notificationToggle" type="checkbox">
+                <span></span>
+              </label>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <strong>Reading Reminder</strong>
+                <span>Placeholder preference for daily reading reminders.</span>
+              </div>
+              <label class="switch-control" for="reminderToggle">
+                <input id="reminderToggle" type="checkbox">
+                <span></span>
+              </label>
+            </div>
+
+            <div id="reminderSettings" class="reminder-settings is-hidden">
+              <div class="settings-row">
+                <div>
+                  <strong>Reminder Time</strong>
+                  <span>Choose when you want to be reminded to read.</span>
+                </div>
+                <div class="custom-time-input" aria-label="Reminder time">
+                  <input id="reminderHourInput" class="time-part-input" type="text" inputmode="numeric" maxlength="2" value="07" aria-label="Reminder hour">
+                  <span class="time-separator">:</span>
+                  <input id="reminderMinuteInput" class="time-part-input" type="text" inputmode="numeric" maxlength="2" value="00" aria-label="Reminder minute">
+                  <select id="reminderPeriodSelect" class="time-period-select" aria-label="Reminder period">
+                    <option value="AM">AM</option>
+                    <option value="PM" selected>PM</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="settings-row">
+                <div>
+                  <strong>Reminder Days</strong>
+                  <span>Choose which days should repeat like an alarm.</span>
+                </div>
+                <div class="reminder-days-control">
+                  <button id="reminderDaysToggle" class="reminder-days-summary" type="button" aria-expanded="false">
+                    <span id="reminderDaysSummary">Weekdays</span>
+                    <span class="reminder-days-arrow">v</span>
+                  </button>
+                  <div id="reminderDaysSelector" class="reminder-days-selector is-collapsed" aria-label="Reminder days">
+                    <button class="reminder-day-button" type="button" data-reminder-day="Sun">Sun</button>
+                    <button class="reminder-day-button" type="button" data-reminder-day="Mon">Mon</button>
+                    <button class="reminder-day-button" type="button" data-reminder-day="Tue">Tue</button>
+                    <button class="reminder-day-button" type="button" data-reminder-day="Wed">Wed</button>
+                    <button class="reminder-day-button" type="button" data-reminder-day="Thu">Thu</button>
+                    <button class="reminder-day-button" type="button" data-reminder-day="Fri">Fri</button>
+                    <button class="reminder-day-button" type="button" data-reminder-day="Sat">Sat</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

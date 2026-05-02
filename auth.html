@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReadTrack Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body class="dark-mode">
+  <div id="notificationContainer" class="notification-container"></div>
+
+  <main class="auth-page">
+    <section class="login-card">
+      <p class="login-label">ReadTrack</p>
+      <h1 id="authTitle">Welcome back</h1>
+      <p id="authCopy" class="login-copy">Login to access your reading dashboard</p>
+
+      <p id="authMessage" class="auth-message"></p>
+
+      <div id="loginView" class="auth-view active-view">
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter password" required>
+          </div>
+
+          <div class="login-meta">
+            <button type="button" class="meta-link link-button" data-view-target="forgot">Forgot password?</button>
+          </div>
+
+          <button type="submit" class="login-button">Login</button>
+
+          <p class="login-footer">
+            Don't have an account?
+            <button type="button" class="footer-link link-button" data-view-target="signup">Create New Account</button>
+          </p>
+        </form>
+      </div>
+
+      <div id="signupView" class="auth-view">
+        <form id="signupForm" class="login-form">
+          <div class="form-group">
+            <label for="signupName">Name</label>
+            <input type="text" id="signupName" placeholder="Your full name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" placeholder="name@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" placeholder="Create password" required>
+          </div>
+
+          <div class="form-group">
+            <label for="signupConfirmPassword">Confirm Password</label>
+            <input type="password" id="signupConfirmPassword" placeholder="Confirm password" required>
+          </div>
+
+          <button type="submit" class="login-button">Create Account</button>
+
+          <p class="login-footer">
+            Already have an account?
+            <button type="button" class="footer-link link-button" data-view-target="login">Back to Login</button>
+          </p>
+        </form>
+      </div>
+
+      <div id="forgotView" class="auth-view">
+        <form id="forgotForm" class="login-form">
+          <div class="form-group">
+            <label for="forgotEmail">Email</label>
+            <input type="email" id="forgotEmail" placeholder="Enter your account email" required>
+          </div>
+
+          <button type="submit" class="login-button">Send Verification Code</button>
+
+          <p class="login-footer">
+            Remembered your password?
+            <button type="button" class="footer-link link-button" data-view-target="login">Back to Login</button>
+          </p>
+        </form>
+      </div>
+
+      <div id="resetView" class="auth-view">
+        <form id="resetForm" class="login-form">
+          <div class="form-group">
+            <label for="resetCode">Verification Code</label>
+            <input type="text" id="resetCode" placeholder="Enter 6-digit code" maxlength="6" required>
+          </div>
+
+          <div class="resend-row">
+            <button type="button" id="resendCodeButton" class="resend-button" disabled>Resend code in 15s</button>
+          </div>
+
+          <div class="form-group">
+            <label for="resetPassword">New Password</label>
+            <input type="password" id="resetPassword" placeholder="Enter new password" required>
+          </div>
+
+          <div class="form-group">
+            <label for="resetConfirmPassword">Confirm New Password</label>
+            <input type="password" id="resetConfirmPassword" placeholder="Confirm new password" required>
+          </div>
+
+          <button type="submit" class="login-button">Reset Password</button>
+
+          <p class="login-footer">
+            Remembered your password?
+            <button type="button" class="footer-link link-button" data-view-target="login">Back to Login</button>
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+</body>
+</html>
