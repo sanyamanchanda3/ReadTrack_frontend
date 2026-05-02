@@ -5,9 +5,7 @@ const ENTRIES_STORAGE_KEY = "readtrackEntries";
 const SESSIONS_STORAGE_KEY = "readtrackReadingSessions";
 const GOAL_STORAGE_KEY = "readtrackReadingGoal";
 const PREFERENCES_STORAGE_KEY = "readtrackPreferences";
-const API_BASE_URL = window.location.port === "5000"
-  ? `${window.location.origin}/api`
-  : "http://localhost:5000/api";
+const API_BASE_URL = "https://readtrack-backend-9emm.onrender.com/api";
 
 let currentUser = getStoredCurrentUser();
 const authToken = getAccessToken();
