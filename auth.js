@@ -2,9 +2,7 @@ const CURRENT_USER_STORAGE_KEY = "readtrackCurrentUser";
 const AUTH_TOKEN_STORAGE_KEY = "readtrackAuthToken";
 const RESET_STORAGE_KEY = "readtrackResetRequest";
 const USER_STORAGE_KEY = "readtrackUser";
-const API_BASE_URL = window.location.port === "5000"
-  ? `${window.location.origin}/api`
-  : "http://localhost:5000/api";
+const API_BASE_URL = "https://readtrack-backend-9emm.onrender.com/api";
 
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
